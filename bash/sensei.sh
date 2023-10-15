@@ -51,6 +51,6 @@ SENSORS=$(sensors -Aj | jq '."coretemp-isa-0000"')
 	CT=`printf "$SENSORS" | grep temp$NUM\_input | sed -e "s/.*\ //;s/.000//;s/,//"`
 	colorize
   done
-	sleep 0.1
+	sleep 1
 	clear
 done
