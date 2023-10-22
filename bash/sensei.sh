@@ -1,26 +1,23 @@
 #!/bin/bash
 
+die() {
+	echo "Error. Dependency $@ not found."
+	exit 1
+}
+
+# Dependency check
+DEPS="jq sensors"
+
+for DEP in $DEPS; do
+	[ "$(command -v ${DEP})" ] || die ${DEP}
+done
+
 NPROC=$(sensors -A | grep "Core" | wc -l)
 NSEQ=$(( $NPROC + 1 ))
 SEQ=$(seq 2 ${NSEQ})
 CS="21 27 33 39 45 51 50 49 48 47 46 82 118 154 190 226 220 214 208 202 196 255"
 RS=`tput sgr0`
 NID=0
-
-die() {
-	echo "Error. Dependency $@ not found."
-	exit 1
-}
-
-checks() {
-	DEPS="jq sensors"
-
-	for DEP in $DEPS; do
-		[ "$(command -v ${DEP})" ] || die ${DEP}
-	done
-}
-
-checks
 
 #This array maps color IDs to order them in a consistent sequence.
 declare -a c
