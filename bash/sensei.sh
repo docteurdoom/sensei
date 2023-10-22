@@ -44,13 +44,13 @@ colorize () {
 }
 
 while true; do
-SENSORS=$(sensors -Aj | jq '."coretemp-isa-0000"')
-	printf "Processor temperature:\n\n"
-  for NUM in $SEQ; do
-	printf "Core $(($NUM - 1)) - "
-	CT=`printf "$SENSORS" | grep temp$NUM\_input | sed -e "s/.*\ //;s/.000//;s/,//"`
-	colorize
-  done
+	SENSORS=$(sensors -Aj | jq '."coretemp-isa-0000"')
+	printf "CPU temperature:\n\n"
+		for NUM in $SEQ; do
+			printf "Core $(($NUM - 1)) - "
+			CT=`printf "$SENSORS" | grep temp$NUM\_input | sed -e "s/.*\ //;s/.000//;s/,//"`
+			colorize
+		done
 	sleep 1
 	clear
 done

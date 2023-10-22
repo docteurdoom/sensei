@@ -1,10 +1,12 @@
+#![allow(unused_must_use)]
+
 mod paint;
+mod misc;
 
 use num_cpus;
 use std::process::Command;
 use serde_json::Value;
-use std::{io, thread, time};
-use std::io::Write;
+use misc::*;
 
 // For each physical CPU parse its temperature from lm-sensors output then apply color and print.
 fn main() {
@@ -17,12 +19,12 @@ fn main() {
             .expect("lm-sensors not found.")
             .stdout;
         clearscreen();
-        println!("Processor temperature: \n");
+        println!("CPU temperature: \n");
         let json: Value = serde_json::from_str(std::str::from_utf8(&output).unwrap()).expect("fail");
         for cpu in 0..cpus {
             let cpudata = gencore(cpu);
             let celsius: f64 = json["coretemp-isa-0000"][&cpudata[0]][&cpudata[1]].to_string().parse::<f64>().unwrap() as f64;
-            println!("Core {}: {}", cpu, paint::apply(celsius));
+            println!("Core {}: {} °C", cpu, paint::apply(celsius));
         }
         // lm-sensors update every second, there is no point in lowering this number.
         sleep(1000);
@@ -35,12 +37,4 @@ fn gencore(ncpu: usize) -> Vec<String> {
     return vec![core, degs];
 }
 
-fn sleep(ms: u32) {
-    let time = time::Duration::from_millis(ms.into());
-    thread::sleep(time);
-}
 
-fn clearscreen() {
-    print!("\x1B[2J\x1B[1;1H");
-    io::stdout().flush().unwrap();
-}
